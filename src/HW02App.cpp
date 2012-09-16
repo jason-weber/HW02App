@@ -46,6 +46,25 @@ void HW02App::keyDown(KeyEvent event)
 	{
 		head = head->prev_;
 	}
+	
+	if(event.getChar() == 'r')
+	{
+		reverse(head);
+	}
+}
+
+void HW02App::reverse(Node* head)
+{
+	head = head->prev_;
+	Node* temp = head;
+	do{
+		Node* swap = temp->next_;
+		temp->next_ = temp->prev_;
+		temp->prev_ = swap;
+		temp = temp->next_;
+
+	}
+	while(temp != head);
 }
 
 void HW02App::setup()
