@@ -10,8 +10,10 @@ class Node{
 		ci::Vec2f v1;
 		ci::Vec2f v2;
 
+		ci::Color8u color;
+
 		Node();
-		Node(ci::Vec2f v1, ci::Vec2f v2);
+		Node(ci::Vec2f v1, ci::Vec2f v2, ci::Color8u c);
 		void draw();
 
 		
