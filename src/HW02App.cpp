@@ -148,7 +148,6 @@ void HW02App::update()
 
 void HW02App::draw()
 {
-	
 	if(!removeText)//If ? hasn't been pressed, draw instructions
 	{
 		gl::drawString("Use the left arrow key to select objects", Vec2f(50.0,200.0),Color(0.0f,0.5f,0.0f),*font);

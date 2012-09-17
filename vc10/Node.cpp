@@ -64,20 +64,24 @@ void Node::addChild(Vec2f v1, Vec2f v2, Color8u c)
 //Draws Node and all children
 void Node::draw(){
 	//Parent node drawing
-	gl::color(Color8u(0,0,0));
-	gl::drawSolidRect(ci::Rectf(v1,(v2 + Vec2f(5,5))));
+	gl::enableAlphaBlending();
+	gl::color(ColorA(0.0f,0.0f,0.0f,0.3f));
+	gl::drawSolidRoundedRect(ci::Rectf(v1,(v2 + Vec2f(3,3))),6.0f);
+	gl::disableAlphaBlending();
 	gl::color(color);
-	gl::drawSolidRect(ci::Rectf(v1,v2));
+	gl::drawSolidRoundedRect(ci::Rectf(v1,v2),6.0f);
 
 	//Node children drawing
 	Node* childTemp = children_;
 	if(childTemp != NULL)
 	{
 		do{
-			gl::color(Color8u(0,0,0));
-			gl::drawSolidRect(ci::Rectf(childTemp->v1,(childTemp->v2 + Vec2f(5,5))));
+			gl::enableAlphaBlending();
+			gl::color(ColorA(0.0f,0.0f,0.0f,0.3f));
+			gl::drawSolidRoundedRect(ci::Rectf(childTemp->v1,(childTemp->v2 + Vec2f(3,3))),4.0f);
+			gl::disableAlphaBlending();
 			gl::color(childTemp->color);
-			gl::drawSolidRect(ci::Rectf(childTemp->v1,childTemp->v2));
+			gl::drawSolidRoundedRect(ci::Rectf(childTemp->v1,childTemp->v2), 4.0f);
 			childTemp = childTemp->next_; //Go to next node
 		}
 		while(childTemp != children_);
