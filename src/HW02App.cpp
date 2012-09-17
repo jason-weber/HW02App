@@ -14,45 +14,55 @@ class HW02App : public AppBasic {
 	void mouseDown( MouseEvent event );	
 	void update();
 	void draw();
-	void insertAfter(Node* posNode, Node* insNode);
+	void prepareSettings(Settings* settings);
 	void keyDown(KeyEvent event);
 	void reverse(Node* head);
 
-	Node* head;
-	Font* font;
-	bool removeText;
+	static const int kAppWidth = 800; // Window width
+	static const int kAppHeight = 600; // Window height
+	Node* head;//Not technically a head, but provides access to circular linked list
+	Font* font; //Font for instructions
+	bool removeText; //When true, removes the instructions
 };
 
-
-void HW02App::insertAfter(Node* posNode, Node* insNode)
-{
-	insNode->next_ = posNode->next_;
-	posNode->next_ = insNode;
-	insNode->next_->prev_ = insNode;
-	insNode->prev_ = posNode;
+/*
+* Prepares window size and prevents resizing
+* @param settings The settings object to change
+*/
+void HW02App::prepareSettings(Settings* settings){
+	(*settings).setWindowSize(kAppWidth,kAppHeight);
+	(*settings).setResizable(false);
 }
 
+/*
+* Method for detecting keyboard presses
+* Provides controls to remove the instructions, bring nodes to front, and reverse the list
+* @param event The keyboard event to detect
+*/
 void HW02App::keyDown(KeyEvent event)
 {
-	if(event.getChar() == '?')
+	if(event.getChar() == '?')//If ? is pressed, set removeText to true
 	{
 		removeText = true;
 	}
-	if(event.getCode() == KeyEvent::KEY_RIGHT)
-	{
-		head = head->next_;		
-	}
-	if(event.getCode() == KeyEvent::KEY_LEFT)
+	if(event.getCode() == KeyEvent::KEY_LEFT)//If left arrow key is pressed, travel to previous node
 	{
 		head = head->prev_;
 	}
-	
-	if(event.getChar() == 'r')
+	if(event.getCode() == KeyEvent::KEY_RIGHT)
+	{
+		head = head->next_;
+	}
+	if(event.getChar() == 'r')//If 'r' key is pressed, reverse the list
 	{
 		reverse(head);
 	}
 }
 
+/*
+* Reverses the order of the list
+* @param head The node that provides access to the list
+*/
 void HW02App::reverse(Node* head)
 {
 	head = head->prev_;
@@ -67,52 +77,93 @@ void HW02App::reverse(Node* head)
 	while(temp != head);
 }
 
+//Initial setup function
 void HW02App::setup()
 {
+	//Adding various nodes
 	head = new Node(Vec2f(0.0,0.0), Vec2f(50.0,50.0), Color8u(255,0,0));
-	insertAfter(head, new Node(Vec2f(25.0,25.0), Vec2f(75.0,75.0), Color8u(0,255,0)));
-	insertAfter(head->next_, new Node(Vec2f(50.0,50.0), Vec2f(100.0,100.0), Color8u(0,0,255)));
-	insertAfter(head, new Node(Vec2f(10.0,10.0), Vec2f(60.0,60.0), Color8u(0,255,255)));
+	head->insertAfter(head, new Node(Vec2f(25.0,25.0), Vec2f(75.0,75.0), Color8u(0,255,0)));
+	head->insertAfter(head->next_, new Node(Vec2f(50.0,50.0), Vec2f(100.0,100.0), Color8u(0,0,255)));
+	head->insertAfter(head, new Node(Vec2f(10.0,10.0), Vec2f(60.0,60.0), Color8u(0,255,255)));
 
-	font = new Font("Ariel",30);
+	//Adding children to head node
+	head->addChild(Vec2f(0.0,5.0),Vec2f(20.0,25.0),Color8u(255,255,0));
+	head->addChild(Vec2f(10.0,10.0), Vec2f(30.0,30.0), Color8u(255,0,255));
+
+	//Setup text
+	font = new Font("Ariel",30); 
 	removeText = false;
 	
 }
 
+/*
+* Detects mouse presses. moves node and children to mouses position
+* @param event Mouse event to detect
+*/
 void HW02App::mouseDown( MouseEvent event )
 {
-	while(event.isLeftDown())
+	if(event.isLeftDown())
 	{
+		Vec2f headOrigin = head->v1; //Stores the heads initial top left vertex
+		Node* childTemp = head->children_; //Node used for iterating through children nodes
+
+		//Width and height to redraw node with the correct size
 		float difX = head->v2.x - head->v1.x;
 		float difY = head->v2.y - head->v1.y;
 
+		//Move head node to mouse position
 		head->v1 = event.getPos();
 		head->v2.x = event.getX() + difX;
 		head->v2.y = event.getY() + difY;
+		
+		
+		if(childTemp != NULL){//Skip if no children
+			//Store position of children within the parent Node
+			float cX1 = 0.0;
+			float cY1 = 0.0;
+			float cX2 = 0.0;
+			float cY2 = 0.0;
+			do{
+				cX1 = childTemp->v1.x - headOrigin.x;
+				cY1 = childTemp->v1.y - headOrigin.y;
+				cX2 = childTemp->v2.x - childTemp->v1.x;
+				cY2 = childTemp->v2.y - childTemp->v1.y;
+
+				//Move children nodes
+				childTemp->v1.x = event.getX() + cX1;
+				childTemp->v1.y = event.getY() + cY1;
+				childTemp->v2.x = event.getX() + cX1 + cX2;
+				childTemp->v2.y = event.getY() + cY1 + cY2;
+				childTemp = childTemp->next_;
+			}
+			while(childTemp != head->children_);//Stops once childTemp == head->children_ again
+		}
 	}
 }
 
+//Not used
 void HW02App::update()
 {
 }
 
 void HW02App::draw()
 {
-	if(!removeText)
+	
+	if(!removeText)//If ? hasn't been pressed, draw instructions
 	{
-		gl::drawString("Use the left and right arrow keys to select objects", Vec2f(50.0,200.0),Color(1.0f,1.0f,1.0f),*font);
-		gl::drawString("Press ? to remove text", Vec2f(50.0,250.0),Color(1.0f,1.0f,1.0f),*font);
+		gl::drawString("Use the left arrow key to select objects", Vec2f(50.0,200.0),Color(0.0f,0.5f,0.0f),*font);
+		gl::drawString("Press ? to remove text, remove before starting", Vec2f(50.0,250.0),Color(0.0f,0.5f,0.0f),*font);
 	}else
 	{
-		//gl::drawString("Use the left and right arrow keys to reorder objects", Vec2f(50.0,200.0),Color(0.0f,0.0f,0.0f),*font);
-		//gl::drawString("Press ? to remove text", Vec2f(50.0,250.0),Color(0.0f,0.0f,0.0f),*font);
-		gl::clear(Color(0.0f,0.0f,0.0f));
+		gl::clear(Color(1.0f,1.0f,1.0f));//Clear out text and makes screen white to better see occlusion
 	}
-	Node* temp = head->prev_;
+
+	//Draw Nodes
+	Node* temp = head->prev_;//Node for traveling through list
 	do{
 		temp->draw();
 		temp = temp->prev_;
-	}while(temp != head->prev_);
+	}while(temp != head->prev_);//Stop if temp == head->prev_ again
 }
 
 CINDER_APP_BASIC( HW02App, RendererGl )
