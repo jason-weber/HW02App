@@ -8,6 +8,8 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+//@author Jason Weber
+//This App satisfies requirements A,B,C,D,E, and I
 class HW02App : public AppBasic {
   public:
 	void setup();
@@ -51,6 +53,9 @@ void HW02App::keyDown(KeyEvent event)
 	}
 	if(event.getCode() == KeyEvent::KEY_RIGHT)
 	{
+		//Because of the order my nodes are drawn in, this appears to improperly reorder 
+		//nodes in the background. It is just because my nodes are drawn in reverse order so
+		//the current head node always appears on top
 		head = head->next_;
 	}
 	if(event.getChar() == 'r')//If 'r' key is pressed, reverse the list
@@ -60,7 +65,7 @@ void HW02App::keyDown(KeyEvent event)
 }
 
 /*
-* Reverses the order of the list
+* Reverses the order of the list, selected Node will remain selected
 * @param head The node that provides access to the list
 */
 void HW02App::reverse(Node* head)
@@ -81,14 +86,14 @@ void HW02App::reverse(Node* head)
 void HW02App::setup()
 {
 	//Adding various nodes
-	head = new Node(Vec2f(0.0,0.0), Vec2f(50.0,50.0), Color8u(255,0,0));
-	head->insertAfter(head, new Node(Vec2f(25.0,25.0), Vec2f(75.0,75.0), Color8u(0,255,0)));
-	head->insertAfter(head->next_, new Node(Vec2f(50.0,50.0), Vec2f(100.0,100.0), Color8u(0,0,255)));
-	head->insertAfter(head, new Node(Vec2f(10.0,10.0), Vec2f(60.0,60.0), Color8u(0,255,255)));
+	head = new Node(Vec2f(0.0f,0.0f), Vec2f(50.0f,50.0f), Color8u(255,0,0));
+	head->insertAfter(head, new Node(Vec2f(25.0f,25.0f), Vec2f(75.0f,75.0f), Color8u(0,255,0)));
+	head->insertAfter(head->next_, new Node(Vec2f(50.0f,50.0f), Vec2f(100.0f,100.0f), Color8u(0,0,255)));
+	head->insertAfter(head, new Node(Vec2f(10.0,10.0f), Vec2f(60.0f,60.0f), Color8u(0,255,255)));
 
 	//Adding children to head node
-	head->addChild(Vec2f(0.0,5.0),Vec2f(20.0,25.0),Color8u(255,255,0));
-	head->addChild(Vec2f(10.0,10.0), Vec2f(30.0,30.0), Color8u(255,0,255));
+	head->addChild(Vec2f(0.0f,5.0f),Vec2f(20.0f,25.0f),Color8u(255,255,0));
+	head->addChild(Vec2f(10.0f,10.0f), Vec2f(30.0f,30.0f), Color8u(255,0,255));
 
 	//Setup text
 	font = new Font("Ariel",30); 
@@ -119,10 +124,10 @@ void HW02App::mouseDown( MouseEvent event )
 		
 		if(childTemp != NULL){//Skip if no children
 			//Store position of children within the parent Node
-			float cX1 = 0.0;
-			float cY1 = 0.0;
-			float cX2 = 0.0;
-			float cY2 = 0.0;
+			float cX1 = 0.0f;
+			float cY1 = 0.0f;
+			float cX2 = 0.0f;
+			float cY2 = 0.0f;
 			do{
 				cX1 = childTemp->v1.x - headOrigin.x;
 				cY1 = childTemp->v1.y - headOrigin.y;
@@ -150,8 +155,8 @@ void HW02App::draw()
 {
 	if(!removeText)//If ? hasn't been pressed, draw instructions
 	{
-		gl::drawString("Use the left arrow key to select objects", Vec2f(50.0,200.0),Color(0.0f,0.5f,0.0f),*font);
-		gl::drawString("Press ? to remove text, remove before starting", Vec2f(50.0,250.0),Color(0.0f,0.5f,0.0f),*font);
+		gl::drawString("Use the left arrow key to select objects and r to reverse order", Vec2f(50.0f,200.0f),Color(0.0f,0.5f,0.0f),*font);
+		gl::drawString("Press ? to remove text, remove before starting", Vec2f(50.0f,250.0f),Color(0.0f,0.5f,0.0f),*font);
 	}else
 	{
 		gl::clear(Color(1.0f,1.0f,1.0f));//Clear out text and makes screen white to better see occlusion

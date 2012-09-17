@@ -65,9 +65,11 @@ void Node::addChild(Vec2f v1, Vec2f v2, Color8u c)
 void Node::draw(){
 	//Parent node drawing
 	gl::enableAlphaBlending();
-	gl::color(ColorA(0.0f,0.0f,0.0f,0.3f));
-	gl::drawSolidRoundedRect(ci::Rectf(v1,(v2 + Vec2f(3,3))),6.0f);
+	//Creates a semi-transparent backdrop for rectangle to give illusion of depth
+	gl::color(ColorA(0.0f,0.0f,0.0f,0.25f));
+	gl::drawSolidRoundedRect(ci::Rectf(v1,(v2 + Vec2f(3.0f,3.0f))),6.0f);
 	gl::disableAlphaBlending();
+
 	gl::color(color);
 	gl::drawSolidRoundedRect(ci::Rectf(v1,v2),6.0f);
 
@@ -76,10 +78,12 @@ void Node::draw(){
 	if(childTemp != NULL)
 	{
 		do{
+			//Creates a semi-transparent backdrop for rectangle to give illusion of depth
 			gl::enableAlphaBlending();
 			gl::color(ColorA(0.0f,0.0f,0.0f,0.3f));
-			gl::drawSolidRoundedRect(ci::Rectf(childTemp->v1,(childTemp->v2 + Vec2f(3,3))),4.0f);
+			gl::drawSolidRoundedRect(ci::Rectf(childTemp->v1,(childTemp->v2 + Vec2f(3.0f,3.0f))),4.0f);
 			gl::disableAlphaBlending();
+
 			gl::color(childTemp->color);
 			gl::drawSolidRoundedRect(ci::Rectf(childTemp->v1,childTemp->v2), 4.0f);
 			childTemp = childTemp->next_; //Go to next node
