@@ -31,7 +31,7 @@
     <ClCompile Include="..\src\HW02App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
+    <ClCompile Include="..\src\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,9 +1,6 @@
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
-//For some reason I get an error if i try to just include Node.h
-//So I had to give its full filepath to avoid this error
-//change the following line to Node.h's filepath on your computer
-#include "C:\Users\Jweb\Desktop\CSE274\HW02App\vc10\Node.h"
+#include "Node.h"
 #include "cinder/Text.h"
 
 
