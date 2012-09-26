@@ -12,17 +12,13 @@ class Node{
 		ci::Vec2f v2; //Bottom right vertex of rectangle
 
 		ci::Color8u color; //Color of rectangle drawn
-		
+
 		//Constructors
 		Node();
-		Node(Node* node);
+		//Node(Node* node);  // This constructor is never used in your code.  -bakersc3
 		Node(ci::Vec2f v1, ci::Vec2f v2, ci::Color8u c);
 
 		void insertAfter(Node* posNode, Node* insNode); //insert node after given node
 		void addChild(ci::Vec2f v1, ci::Vec2f v2, ci::Color8u c);//adds child to node
 		void draw();
-
-		
-
-
 };
